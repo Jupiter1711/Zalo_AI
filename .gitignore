@@ -1,0 +1,8 @@
+/data 
+CLAUDE.md
+__pycache__
+cache
+/venv
+venv/ 
+.env 
+MEMORY.md
