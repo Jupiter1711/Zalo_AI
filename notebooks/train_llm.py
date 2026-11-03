@@ -44,21 +44,21 @@ def _():
     CFG = dict(
         model_id="Qwen/Qwen3-4B-Instruct-2507",
         data_repo="Jupiter1711/zalo-lifemate-data",  # HF dataset private (src/tools/upload_hf.py)
-        # Mặc định = cấu hình v1 (bản nộp public 52.32). v2: sft_dir=sft_v2 train_splits=train,val_seen epochs=2
-        #   eval_text_src=asr eval_before=false out_repo=Jupiter1711/lifemate-qwen3-4b-lora-v2
-        out_repo="Jupiter1711/lifemate-qwen3-4b-lora",  # HF model repo private để lưu adapter/checkpoint; "" = không push
-        sft_dir="sft",  # sft: chỉ text sạch (v1) | sft_v2: mỗi sample 2 bản, text sạch + text ASR k-fold
-        train_splits="train",  # bản nộp cuối: train,val_seen,val_unseen
+        # Mặc định = cấu hình v2 (text sạch + text ASR k-fold). Chạy lại v1 (public 52.32, tag v0.1-public-52.32):
+        #   sft_dir=sft train_splits=train epochs=3 eval_text_src= eval_before=true out_repo=Jupiter1711/lifemate-qwen3-4b-lora
+        out_repo="Jupiter1711/lifemate-qwen3-4b-lora-v2",  # HF model repo private để lưu adapter/checkpoint; "" = không push
+        sft_dir="sft_v2",  # sft: chỉ text sạch (v1) | sft_v2: mỗi sample 2 bản, text sạch + text ASR k-fold
+        train_splits="train,val_seen",  # bản nộp cuối: train,val_seen,val_unseen
         eval_split="val_unseen",
-        eval_text_src="",  # với sft_v2 đặt "asr": đo trên bản text ASR (giống lúc chạy thật); "" = mọi bản
+        eval_text_src="asr",  # đo trên bản text ASR (giống lúc chạy thật); "" = mọi bản (bắt buộc "" với sft v1)
         eval_n=80,  # số sample để đo nhanh bước đầu tiên (trước/sau train)
-        eval_before=True,  # đo model gốc trước khi train để so sánh (baseline đã biết: 0.45 đúng cả tham số)
+        eval_before=False,  # True: đo model gốc trước khi train (baseline đã biết: 0.45 đúng cả tham số)
         max_len=12288,
         lora_r=64,
         lora_alpha=128,
         lora_dropout=0.05,
         lr=1e-4,
-        epochs=3,  # v2 (sft_v2 đã nhân đôi dữ liệu): 2
+        epochs=2,  # sft_v2 đã nhân đôi dữ liệu (v1: 3)
         grad_accum=8,
         warmup_ratio=0.03,
         save_steps=50,
